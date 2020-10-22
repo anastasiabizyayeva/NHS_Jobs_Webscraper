@@ -16,6 +16,7 @@ from selenium.common import exceptions
 import time
 
 import pandas as pd 
+import numpy as np
 
 #Establish path to Chromedriver
 
@@ -44,81 +45,29 @@ try:
     salaries = []
     posted_dates = []
     closing_dates = []
+    job_types = []
+    working_patterns = []
+    pay_schemes = []
+    pay_bands = []
+    departments = []
     locations = []
-    
-    links = driver.find_elements_by_xpath("//div[contains(@class, 'vacancy')]//following-sibling::a[1]")
-    for link in links:
-        link_text = link.get_attribute("href")
-        print(link_text)
-    # this_window = driver.current_window_handle # get current/main window
+    descriptions = []
 
-    # for link in links:
-    #     link.click()
-    #     driver.switch_to_window([win for win in driver.window_handles if win !=this_window][0]) # switch to new window
-    #     date = driver.find_elements_by_class_name("mstat-date")
-    #     for d in date:
-    #         print(d.text)
-    #     driver.close() # close new window
-    #     driver.switch_to_window(this_window) # switch back to main window
-
-#Get the 'vacancy' container and loop through it 
+    #Get the 'vacancy' container and loop through it 
 
     results = main.find_elements_by_class_name('vacancy')
     
 #Loop over each vacancy 
 
     for result in results:
-        
-        link = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, "h2 > a[href]")))  
-        
-        link.click()
-        
-        j_type = driver.find_elements_by_xpath("//dt[.='Job Type:']/following-sibling::dd[1]")
-        for x in j_type:
-            print(x.text)
-        
-        w_pattern = driver.find_elements_by_xpath("//dt[.='Working pattern:']/following-sibling::dd[1]")
-        for x in w_pattern:
-            print(x.text)
-        
-        p_scheme = driver.find_elements_by_xpath("//dt[.='Pay Scheme:']/following-sibling::dd[1]")
-        for x in p_scheme:
-            print(x.text)
-        
-        p_band = driver.find_elements_by_xpath("//dt[.='Pay Band:']/following-sibling::dd[1]")
-        for x in p_band:
-            print(x.text)
-            
-        s_function = driver.find_elements_by_xpath("//dt[.='Specialty/Function:']/following-sibling::dd[1]")
-        for x in s_function:
-            print(x.text)
-        
-        location = driver.find_elements_by_xpath("//dt[.='Location:']/following-sibling::dd[1]")
-        for x in location:
-            print(x.text)
-        
-        description = driver.find_elements_by_xpath("/html/body/div[2]/div[3]/div/div/div/div/div[1]/div[2]/div[3]")
-        for x in description:
-            print(x.text)
-        
-        # link = driver.find_element_by_xpath("//h2[1]//a[1]")
-        
-        # time.sleep(4)
-        
-        # link.click()
-        
-        
-        # time.sleep(4)
-        # driver.back()
-        
-        # time.sleep(4)
-        # link = driver.find_element_by_xpath("//h2[1]//a[1]")
                 
         #Get title
         
         title = result.find_element_by_css_selector("h2 > a[href]").get_attribute("title")
-        titles.append(title)        
+        titles.append(title)  
+        
+        department = result.find_element_by_tag_name("h3").text
+        departments.append(department)
         
         #Get salary info 
         
@@ -130,15 +79,50 @@ try:
         employer = result.find_element_by_class_name('agency')
         employers.append(employer.text)
     
+    link_list = []
+    
+    links = driver.find_elements_by_xpath("//span[contains(@class, 'icons icon-covid-19')]/following-sibling::a[1]")
+    for link in links:
+        link_text = link.get_attribute("href")
+        link_list.append(link_text)
+    
+    # this_window = driver.current_window_handle # get current/main window
+
+    for link in link_list:
+        driver.get(link)
+        
+        j_type = driver.find_elements_by_xpath("//dt[.='Job Type:']/following-sibling::dd[1]")
+        if not j_type: x = "None"
+        else: x = j_type[0].text
+        job_types.append(x)
+        
+        w_pattern = driver.find_elements_by_xpath("//dt[.='Working pattern:']/following-sibling::dd[1]")
+        if not w_pattern: x = "None"
+        else: x = w_pattern[0].text
+        working_patterns.append(x)
+        
+        p_scheme = driver.find_elements_by_xpath("//dt[.='Pay Scheme:']/following-sibling::dd[1]")
+        if not p_scheme: x = "None"
+        else: x = p_scheme[0].text
+        pay_schemes.append(x)
         
         
-        #Click into title 
+        p_band = driver.find_elements_by_xpath("//dt[.='Pay Band:']/following-sibling::dd[1]")
+        if not p_band: x = "None"
+        else: x = p_band[0].text
+        pay_bands.append(x)
+         
+        location = driver.find_elements_by_xpath("//dt[.='Location:']/following-sibling::dd[1]")
+        if not location: x = "None"
+        else: x = location[0].text
+        locations.append(x)
         
-        #Get into from side panel
+        description = driver.find_elements_by_xpath("/html/body/div[2]/div[3]/div/div/div/div/div[1]/div[2]/div[3]")
+        if not description: x = "None"
+        else: x = description[0].text
+        descriptions.append(x)
         
-        #Main page info 
-        
-        #Return back to previous page
+        driver.back()
         
     j_ref = driver.find_elements_by_xpath("//dt[.='Job Ref:']/following-sibling::dd")
     for x in j_ref:
@@ -152,10 +136,13 @@ try:
     for x in closing_date:
         closing_dates.append(x.text)
     
-    data = {'Job Ref': job_ref, 'Title':titles,'Employer': employers, 'Salary': salaries, 'Posted Date': posted_dates, 'Closing Date': closing_dates}
+    data = {'Job Ref': job_ref, 'Title':titles,'Employer': employers, 'Salary': salaries, 'Posted Date': posted_dates, 'Closing Date': closing_dates, 'Job Type': job_types, 'Working Pattern': working_patterns, 'Pay Scheme': pay_schemes, 'Pay Band': pay_bands, 'Department': departments, 'Location': locations, 'Description': descriptions}
     
-    df = pd.DataFrame(data)
-    print(df['Job Ref'].head())
+    for k,v in data.items():
+        print(k + str(len(v)))
+    # df = pd.DataFrame(data)
+    # print(df.head())
+    print(data['Pay Band'])
 
 #Click on next page when there's no more page left
 #print a test of the row (df.iloc[1])
