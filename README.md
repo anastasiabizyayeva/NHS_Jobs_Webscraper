@@ -23,7 +23,7 @@ Once you've made these adjustments, simply run the script - you'll see printouts
 
 * **XPath in Selenium WebDriver:**: https://www.guru99.com/xpath-selenium.html
 * **Python Selenium Tutorial:** https://www.youtube.com/watch?v=Xjv1sY630Uc&list=PLzMcBGfZo4-n40rB1XaJ0ak1bemvlqumQ
-* **Real World Example on Web Scraping with Selenium and Beautiful Soup:*https://towardsdatascience.com/real-world-example-on-web-scraping-with-selenium-and-beautiful-soup-3e615dbc1fa1* 
+* **Real World Example on Web Scraping with Selenium and Beautiful Soup:** https://towardsdatascience.com/real-world-example-on-web-scraping-with-selenium-and-beautiful-soup-3e615dbc1fa1* 
 
 ## Data Schema
 
