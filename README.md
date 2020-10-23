@@ -4,7 +4,7 @@ A selenium webscraper that pulls out pertinent job posting details from https://
 
 ## Running the Webscraper
 
-This webscraper was created to support the `Nursing_Salary_Estimator` project, and as such there are some default parameters in the uploaded code that suit that work. Recommendations for running and amending the code can be found below:
+This webscraper was created to look at nursing salaries, and as such there are some default parameters in the uploaded code that suit that work. Recommendations for running and amending the code can be found below:
 
 #### Pre-Requisites
 
